@@ -1,0 +1,474 @@
+#!/bin/bash
+
+JOIN="\e[44;37m   JOIN   \e[0m"
+HI_JOIN="\e[41;37m   JOIN   \e[0m"
+SIGN_IN="\e[44;37m SIGN IN  \e[0m"
+HI_SIGN_IN="\e[41;37m SIGN IN  \e[0m"
+EXIT="\e[44;37m   EXIT   \e[0m"
+HI_EXIT="\e[41;37m   EXIT   \e[0m"
+SIGN_OUT="\e[44;37m SIGN OUT \e[0m"
+HI_SIGN_OUT="\e[41;37m SIGN OUT \e[0m"
+
+
+ID="\e[44;37m         ID         \e[0m"
+HI_ID="\e[41;37m         ID         \e[0m"
+PW="\e[44;37m         PW         \e[0m"
+HI_PW="\e[41;37m         PW         \e[0m"
+DUP_CHECK="\e[44;37m Duplicate check \e[0m"
+HI_DUP_CHECK="\e[41;37m Duplicate check \e[0m"
+LOGIN="\e[44;37m  LOGIN  \e[0m"
+HI_LOGIN="\e[41;37m  LOGIN  \e[0m"
+
+TEMP_ID_COLOR=$ID
+
+input=""
+where_is_it=0
+JOIN_COLOR=$JOIN
+SIGN_IN_COLOR=$SIGN_IN
+EXIT_COLOR=$EXIT
+SIGN_OUT_COLOR=$SIGN_OUT
+ID_COLOR=$ID
+PW_COLOR=$PW
+DUP_CHECK_COLOR=$DUP_CHECK
+LOGIN_COLOR=$LOGIN
+
+initial_color()
+{
+JOIN_COLOR=$JOIN
+SIGN_IN_COLOR=$SIGN_IN
+EXIT_COLOR=$EXIT
+SIGN_OUT_COLOR=$SIGN_OUT
+ID_COLOR=$ID
+PW_COLOR=$PW
+DUP_CHECK_COLOR=$DUP_CHECK
+LOGIN_COLOR=$LOGIN
+}
+
+
+print_blank()
+{
+printf "                    "
+}
+
+join_menu()
+{
+while [ : ]
+do
+        print_blank ; echo -e "  _ ____    _     ___   ____ ___ _   _ "
+        print_blank ; echo -e " / |  _ \  | |   / _ \ / ___|_ _| \ | | "
+	print_blank ; echo -e " | | |_) | | |  | | | | |  _ | ||  \| |  "
+        print_blank ; echo -e " | |  __/  | |__| |_| | |_| || || |\  |  "
+        print_blank ; echo -e " |_|_|     |_____\___/ \____|___|_| \_|  "
+
+	echo -e "\n"
+
+        print_blank ; printf "            " ; echo -e "$ID_COLOR \n"
+
+        print_blank ; printf "            " ; echo -e "$PW_COLOR \n"
+
+        echo -e " \n "
+        print_blank ; printf "          " ;  echo -e -n "$LOGIN_COLOR"
+        printf "    " ; echo -e "$EXIT_COLOR"
+
+	read -s -n 1 input
+
+        if [ "$input" = "" ]
+        then
+                if [ "$where_is_it" = "4" ]
+                then
+                        exit
+                fi
+        fi
+
+        if [ "$input" = "" ]
+        then
+              read -n 1 input
+              if [ "$input" = "[" ]
+              then
+                      read -n 1 input
+                      if [ "$input" = "A" ]
+                      then
+
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             fi
+                     elif [ "$input" = "B" ]
+                     then
+
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             elif [ "$where_is_it" = "2" ] || [ "$where_is_it" = "3" ]
+                             then
+                                     initial_color ; LOGIN_COLOR=$HI_LOGIN ; where_is_it=3 ; clear
+                             elif [ "$where_is_it" = "4" ]
+                             then
+                                     initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
+                             fi
+                     elif [ "$input" = "C" ]
+		     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
+                             then
+                                     initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=4 ; clear
+                             fi
+                     elif [ "$input" = "D" ]
+                     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
+                             then
+                                     initial_color ; LOGIN_COLOR=$HI_LOGIN ; where_is_it=3 ; clear
+                             fi
+                      fi
+              else
+                      clear ; where_is_it=0
+              fi
+      else
+        clear ; where_is_it=0
+        fi
+
+
+done
+}
+
+sign_out_menu()
+{
+while [ : ]
+do
+	print_blank ; echo -e "  ____ ___ ____ _   _    ___  _   _ _____ "
+        print_blank ; echo -e " / ___|_ _/ ___| \ | |  / _ \| | | |_   _| "
+        print_blank ; echo -e " \___ \| | |  _|  \| | | | | | | | | | |  "
+        print_blank ; echo -e "  ___) | | |_| | |\  | | |_| | |_| | | | "
+        print_blank ; echo -e " |____/___\____|_| \_|  \___/ \___/  |_| "
+
+	echo -e "\n"
+
+	print_blank ; printf "            " ; echo -e "$ID_COLOR \n"
+
+	print_blank ; printf "            " ; echo -e "$PW_COLOR \n"
+
+	echo -e " \n "
+	print_blank ; printf "          " ;  echo -e -n "$SIGN_OUT_COLOR"
+	printf "    " ; echo -e "$EXIT_COLOR"
+
+	read -s -n 1 input
+	
+	if [ "$input" = "" ]
+	then
+		if [ "$where_is_it" = "4" ]
+		then
+			exit
+		fi
+	fi
+
+	if [ "$input" = "" ]
+        then
+              read -n 1 input
+              if [ "$input" = "[" ]
+              then
+                      read -n 1 input
+                      if [ "$input" = "A" ]
+                      then
+
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             fi
+                     elif [ "$input" = "B" ]
+                     then
+
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             elif [ "$where_is_it" = "2" ] || [ "$where_is_it" = "3" ]
+                             then
+                                     initial_color ; SIGN_OUT_COLOR=$HI_SIGN_OUT ; where_is_it=3 ; clear
+                             elif [ "$where_is_it" = "4" ]
+                             then
+                                     initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
+                             fi
+                     elif [ "$input" = "C" ]
+                     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
+                             then
+                                     initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=4 ; clear
+                             fi
+		     elif [ "$input" = "D" ]
+		     then
+			     initial_color
+			     if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
+                             then
+                                     initial_color ; SIGN_OUT_COLOR=$HI_SIGN_OUT ; where_is_it=3 ; clear
+                             fi
+		      fi
+	      else
+		      clear ; where_is_it=0
+	      fi
+      else
+	clear ; where_is_it=0
+	fi
+done
+
+
+}
+
+
+sign_in_menu()
+{	
+while [ : ]
+do
+	print_blank ; echo -e "  ____ ___ ____ _   _    ___ _   _ "
+	print_blank ; echo -e " / ___|_ _/ ___| \ | |  |_ _| \ | | "
+	print_blank ; echo -e " \___ \| | |  _|  \| |   | ||  \| | "
+	print_blank ; echo -e "  ___) | | |_| | |\  |   | || |\  | "
+       	print_blank ; echo -e " |____/___\____|_| \_|  |___|_| \_| "
+	
+	echo -e "\n"
+
+	printf "                " ; echo -e -n "$TEMP_ID_COLOR"
+	printf "   " ; echo -e "$DUP_CHECK_COLOR"
+	echo " "
+	printf "                " ; echo -e -n "$PW_COLOR"
+	echo -e " \n "
+
+	print_blank ;  echo -n -e "$SIGN_IN_COLOR"
+	printf "            " ; echo -e "$EXIT_COLOR"
+
+	[ $temp ] || TEMP_ID_COLOR="\e[44;37m         ID         \e[0m"
+	[ $temp ] || TEMP_ID="\e[44;37m         ID         \e[0m"
+	[ $temp ] || HI_TEMP_ID="\e[41;37m         ID         \e[0m"
+
+
+
+	read -s -n 1 input                                   
+
+	if [ "$input" = "" ]
+        then
+                if [ "$where_is_it" = "5" ]
+                then
+                        exit
+		elif [ "$where_is_it" = "1" ]
+		then
+			read temp
+			if [ temp ]
+			then
+			TEMP_ID="\e[44;37m     $temp      \e[0m"
+			HI_TEMP_ID="\e[41;37m     $temp      \e[0m"
+			TEMP_ID_COLOR=$HI_TEMP_ID
+			fi
+
+
+		else
+			clear
+		fi
+        fi
+        if [ "$input" = "" ]
+        then
+              read -n 1 input
+              if [ "$input" = "[" ]
+              then
+                      read -n 1 input
+                      if [ "$input" = "A" ]
+                      then
+                             
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "3" ]
+                             then
+                                     initial_color ; TEMP_ID_COLOR=$HI_TEMP_ID ; where_is_it=1 ; clear
+			     elif [ "$where_is_it" = "4" ] || [ "$where_is_it" = "5" ]
+			     then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=3 ; clear
+			     elif [ "$where_is_it" = "2" ]
+			     then 
+				     initial-color ; DUP_CHECK_COLOR=$HI_DUP_CHECK ; where_is_it=2 ; clear
+                             fi
+		     elif [ "$input" = "B" ]
+                     then
+                             
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=3 ; TEMP_ID_COLOR=$TEMP_ID ; clear 
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
+                             then
+				     initial_color ; SIGN_IN_COLOR=$HI_SIGN_IN ; where_is_it=4 ; clear
+                             elif [ "$where_is_it" = "5" ]
+                             then 
+                                     initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=5 ; clear
+                             fi
+		     elif [ "$input" = "C" ]
+                     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "3" ]
+                             then
+                                     initial_color ; DUP_CHECK_COLOR=$HI_DUP_CHECK ; where_is_it=2 ; TEMP_ID_COLOR=$TEMP_ID ;clear
+                             elif [ "$where_is_it" = "4" ] || [ "$where_is_it" = "5" ]
+                             then
+                                     initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=5 ; clear
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; DUP_CHECK_COLOR=$HI_DUP_CHECK ; where_is_it=2 ; clear
+                             fi
+		     elif [ "$input" = "D" ]
+                     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color; TEMP_ID_COLOR=$HI_TEMP_ID ; where_is_it=1 ; clear
+                             elif [ "$where_is_it" = "4" ] || [ "$where_is_it" = "5" ]
+                             then
+				     initial_color; SIGN_IN_COLOR=$HI_SIGN_IN ; where_is_it=4 ; clear
+                             elif [ "$where_is_it" = "3" ]
+                             then
+                                     initial_color; PW_COLOR=$HI_PW ; where_is_it=3 ; clear
+                             fi
+		      fi
+	      fi
+      else
+	      where_is_it=0 ; clear
+	fi
+done
+
+}
+
+menu()
+{
+print_blank ; echo -e "  ____   ___  ____ ___ __       _ "
+print_blank ; echo -e " / ___| / _ \/ ___|_ _|  |     / |"
+print_blank ; echo -e " \___ \| | | \___ \| ||  |     | |"
+print_blank ; echo -e "  ___) | | | |___) | ||  |___  | |"
+print_blank ; echo -e " |____/ \___/|____/___|______| |_|"
+print_blank ; echo -e "     _  _____  _    __  ____  __"
+print_blank ; echo -e "    / \|_   _|/ \   \ \/ /\ \/ /"
+print_blank ; echo -e "   / _ \ | | / _ \   \  /  \  / "
+print_blank ; echo -e "  / ___ \| |/ ___ \  /  \  /  \ "
+print_blank ; echo -e " /_/   \_\_/_/   \_\/_/\_\/_/\_\ "
+
+
+
+echo -e "\n"
+
+print_blank ; echo -e "                           2019203029 이성훈\n"
+
+print_blank ; echo -n -e "$JOIN_COLOR"
+print_blank ; echo -e "$SIGN_IN_COLOR"
+echo -e "\n"
+
+print_blank ; echo -n -e "$EXIT_COLOR"
+print_blank ; echo -e "$SIGN_OUT_COLOR"
+
+ 
+}
+
+
+clear
+while [ : ]
+do
+	menu
+	
+	read -s -n 1 input
+
+	if [ "$input" = "" ]
+        then
+		if [ "$where_is_it" = "1" ]
+		then
+			clear
+			where_is_it=0
+			initial_color
+			join_menu
+                elif [ "$where_is_it" = "3" ]
+		then
+			break
+		elif [ "$where_is_it" = "2" ]
+		then
+			clear
+			where_is_it=0
+			initial_color
+			sign_in_menu
+		elif [ "$where_is_it" = "4" ]
+		then
+			clear
+			where_is_it=0
+			initial_color
+			sign_out_menu
+		fi
+        fi
+	if [ "$input" = "" ]
+	then
+  	      read -n 1 input
+	      if [ "$input" = "[" ]
+	      then
+		      read -n 1 input
+      		      if [ "$input" = "A" ]
+       		      then
+			     initial_color
+			     if [ "$where_is_it" = "4" ] || [ "$where_is_it" = "2" ]
+			     then
+				     initial_color ; SIGN_IN_COLOR=$HI_SIGN_IN ; where_is_it=2 ; clear
+			     else
+				     JOIN_COLOR=$HI_JOIN ; where_is_it=1 ; clear
+			     fi
+		      elif [ "$input" = "B" ]
+      		      then
+			      initial_color
+			      if [ "$where_is_it" = "4" ] || [ "$where_is_it" = "2" ]
+			      then
+				     initial_color ;  SIGN_OUT_COLOR=$HI_SIGN_OUT ; where_is_it=4 ; clear
+		 	      else
+				     EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
+			      fi
+      		      elif [ "$input" = "C" ]
+      		      then
+			      initial_color
+			      if [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
+			      then
+				     SIGN_OUT_COLOR=$HI_SIGN_OUT ; where_is_it=4 ; clear
+			      else
+				     initial_color ; SIGN_IN_COLOR=$HI_SIGN_IN ; where_is_it=2 ; clear
+			      fi
+      		      elif [ "$input" = "D" ]
+      		      then
+      			      initial_color
+			      if [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
+			      then
+				     EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
+			      else
+				     initial_color ; JOIN_COLOR=$HI_JOIN ; where_is_it=1 ; clear
+			      fi
+
+      		      fi
+	      fi
+      else
+	      whiere_is_it=0; clear
+	fi
+done
