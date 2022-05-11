@@ -1,0 +1,16 @@
+#!/bin/bash
+
+clear
+
+echo -e '\e[1;37;44m         '
+
+echo -n -e '\e[1;2H' 
+read -p $'\e[1;31;44m \e' input
+echo -e '\e[0m'
+
+echo $input
+
+echo -e "\e[1;37;44m            "
+echo -e "\e[4;5H$input"
+
+

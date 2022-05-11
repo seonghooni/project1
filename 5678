@@ -1,0 +1,23 @@
+#!/bin/bash
+
+read temp
+
+echo ${#temp}
+
+remainder=`expr 15 - ${#temp}`
+
+echo $remainder
+
+temp="  "$temp
+
+for (( i=0; i<$remainder; i++))
+do
+	temp=$temp" "
+done
+
+result="\e[44;37m$temp\e[0m"
+
+return result
+
+echo -e "$result"
+
