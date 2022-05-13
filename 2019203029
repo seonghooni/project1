@@ -73,6 +73,8 @@ initial_input()
 	temp=""
 	id_result=""
 	pw_result=""
+	id=""
+	pw=""
 }
 
 load_infor()
@@ -90,6 +92,21 @@ load_infor()
 }
 
 
+print_success()
+{
+	echo -e "\n\n\n\n"
+
+        print_blank ; echo -e "   ____  _   _  ____ ____ _____ ____ ____ "
+        print_blank ; echo -e "  / ___|| | | |/ ___/ ___| ____/ ___/ ___| "
+        print_blank ; echo -e "  \___ \| | | | |  | |   |  _| \___ \___ \ "
+	print_blank ; echo -e "   ___) | |_| | |__| |___| |___ ___) |__) | "
+        print_blank ; echo -e "  |____/ \___/ \____\____|_____|____/____/  "
+
+	echo -e "\n\n\n\n\n\n"
+
+}
+
+
 join_menu()
 {
 while [ : ]
@@ -102,13 +119,22 @@ do
 
 	echo -e "\n"
 
-        print_blank ; printf "          " ; echo -e "$ID_COLOR \n"
 
-        print_blank ; printf "          " ; echo -e "$PW_COLOR \n"
+	print_blank ; printf "          " ; echo -e "$TEMP_ID_COLOR \n"
+
+        print_blank ; printf "          " ; echo -e "$TEMP_PW_COLOR \n"
 
         echo -e " \n "
         print_blank ; printf "         " ;  echo -e -n "$LOGIN_COLOR"
         printf "    " ; echo -e "$EXIT_COLOR"
+
+        [ -z "$id_result" ] && TEMP_ID_COLOR="\e[44;37m         ID         \e[0m"
+        [ -z "$pw_result" ] && TEMP_PW_COLOR="\e[44;37m         PW         \e[0m"
+
+        TEMP_ID="\e[44;37m         ID         \e[0m"
+        HI_TEMP_ID="\e[41;37m         ID         \e[0m"
+        TEMP_PW="\e[44;37m         PW         \e[0m"
+        HI_TEMP_PW="\e[41;37m         ID         \e[0m"
 
 	read -s -n 1 input
 
@@ -116,8 +142,231 @@ do
         then
                 if [ "$where_is_it" = "4" ]
                 then
-			setterm -cursor on
+                        setterm -cursor on
                         exit
+                elif [ "$where_is_it" = "1" ]
+                then
+                        echo -n -e '\e[8;31H' ; echo -n -e "$RED"
+                        echo -n -e '\e[8;34H'
+                        read -p $'\e[41;37m' temp
+                        echo -n -e '\e[0m'
+                        if [ $temp ]
+                        then
+                        id=$temp
+                        make_result
+                        id_result="$result"
+                        red_id_result="$red_result"
+                        TEMP_ID_COLOR="$id_result"
+                        temp=""
+                        fi
+		elif [ "$where_is_it" = "2" ]
+                then
+                        echo -n -e '\e[10;31H' ; echo -n -e "$RED"
+                        echo -n -e '\e[10;34H'
+                        read -p $'\e[41;37m' temp
+                        echo -n -e '\e[0m'
+                        if [ $temp ]
+                        then
+                        pw=$temp
+                        make_result
+                        pw_result="$result"
+                        red_pw_result="$red_result"
+                        TEMP_PW_COLOR="$pw_result"
+                        temp=""
+                        fi
+		elif [ "$where_is_it" = "3" ]
+		then
+			if [ -s 1p_information.txt ] && [ "$id" = "$id_1p" ] && [ "$pw" = "$pw_1p" ]
+			then
+				online_1p="true"
+				initial_input
+                      		TEMP_ID_COLOR="\e[44;37m         ID         \e[0m"
+                       		TEMP_PW_COLOR="\e[44;37m         PW         \e[0m"
+				clear
+				2p_login_menu
+			elif [ -s 2p_informaiton.txt ] && [ "$id" = "$id_2p" ] && [ "$pw" = "$pw_2p" ]
+			then
+				online_2p="true"
+				initial_input
+                                TEMP_ID_COLOR="\e[44;37m         ID         \e[0m"
+                                TEMP_PW_COLOR="\e[44;37m         PW         \e[0m"
+                                clear
+				2p_login_menu
+			else
+				setterm -cursor on
+				exit
+			fi
+		else
+			clear
+		fi
+	fi
+
+	if [ "$input" = "" ]
+        then
+              read -n 1 input
+              if [ "$input" = "[" ]
+              then
+                      read -n 1 input
+                      if [ "$input" = "A" ]
+                      then
+
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ;
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
+                             then
+                                     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; where_is_it=2
+                             fi
+                     elif [ "$input" = "B" ]
+                     then
+
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$id_result
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
+                             elif [ "$where_is_it" = "2" ] || [ "$where_is_it" = "3" ]
+                             then
+                                     initial_color ; LOGIN_COLOR=$HI_LOGIN ; where_is_it=3 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result
+                             elif [ "$where_is_it" = "4" ]
+                             then
+                                     initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
+                             fi
+                     elif [ "$input" = "C" ]
+                     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; TEMP_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
+                             then
+                                     initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=4 ; clear
+                             fi
+                     elif [ "$input" = "D" ]
+                     then
+                             initial_color
+                             if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
+                             then
+                                     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
+                             elif [ "$where_is_it" = "2" ]
+                             then
+                                     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
+                             elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
+                             then
+                                     initial_color ; LOGIN_COLOR=$HI_LOGIN ; where_is_it=3 ; clear
+                             fi
+                      fi
+              else
+                      clear
+              fi
+      else
+        clear
+        fi
+
+done
+
+
+}
+
+2p_login_menu()
+{
+while [ : ]
+do
+
+
+        printf "                 " ; echo -e " ____  ____    _     ___   ____ ___ _   _ "
+        printf "                 " ; echo -e "|___ \|  _ \  | |   / _ \ / ___|_ _| \ | | "
+        printf "                 " ; echo -e "  __) | |_| | | |  | | | | |  _ | ||  \| |  "
+        printf "                 " ; echo -e " / __/| |__/  | |__| |_| | |_| || || |\  |  "
+        printf "                 " ; echo -e "|_____|_|     |_____\___/ \____|___|_| \_|  "
+
+        echo -e "\n"
+
+        print_blank ; printf "          " ; echo -e "$TEMP_ID_COLOR \n"
+
+        print_blank ; printf "          " ; echo -e "$TEMP_PW_COLOR \n"
+
+        echo -e " \n "
+        print_blank ; printf "         " ;  echo -e -n "$LOGIN_COLOR"
+        printf "    " ; echo -e "$EXIT_COLOR"
+
+        [ -z "$id_result" ] && TEMP_ID_COLOR="\e[44;37m         ID         \e[0m"
+        [ -z "$pw_result" ] && TEMP_PW_COLOR="\e[44;37m         PW         \e[0m"
+        TEMP_ID="\e[44;37m         ID         \e[0m"
+        HI_TEMP_ID="\e[41;37m         ID         \e[0m"
+        TEMP_PW="\e[44;37m         PW         \e[0m"
+        HI_TEMP_PW="\e[41;37m         ID         \e[0m"
+
+        read -s -n 1 input
+	
+	if [ "$input" = "" ]
+        then
+                if [ "$where_is_it" = "4" ]
+                then
+                        setterm -cursor on
+                        exit
+                elif [ "$where_is_it" = "1" ]
+                then
+                        echo -n -e '\e[8;31H' ; echo -n -e "$RED"
+                        echo -n -e '\e[8;34H'
+                        read -p $'\e[41;37m' temp
+                        echo -n -e '\e[0m'
+                        if [ $temp ]
+                        then
+                        id=$temp
+                        make_result
+                        id_result="$result"
+                        red_id_result="$red_result"
+                        TEMP_ID_COLOR="$id_result"
+                        temp=""
+                        fi
+                elif [ "$where_is_it" = "2" ]
+                then
+                        echo -n -e '\e[10;31H' ; echo -n -e "$RED"
+                        echo -n -e '\e[10;34H'
+                        read -p $'\e[41;37m' temp
+                        echo -n -e '\e[0m'
+                        if [ $temp ]
+                        then
+                        pw=$temp
+                        make_result
+                        pw_result="$result"
+                        red_pw_result="$red_result"
+                        TEMP_PW_COLOR="$pw_result"
+                        temp=""
+                        fi
+		elif [ "$where_is_it" = "3" ]
+                then
+			if [ "$online_1p" = "true" ]
+			then
+				if [ -s 2p_information.txt ] && [ "$id" = "$id_2p" ] && [ "$pw" = "$pw_2p" ]
+				then
+					clear && print_success && setterm -cursor on && exit
+				else
+					setterm -cursor on && exit
+				fi
+			elif [ "$online_2p" = "true" ]
+			then
+				if [ -s 1p_information.txt ] && [ "$id" = "$id_1p" ] && [ "$pw" = "$pw_1p" ]
+				then
+					clear && print_success && setterm -cursor on && exit
+				else
+					setterm -cursor on && exit
+				fi
+			fi
+                else
+                        clear
                 fi
         fi
 
@@ -132,33 +381,41 @@ do
 
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
                              then
-                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ;
                              elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
                              then
-                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; where_is_it=2
                              fi
                      elif [ "$input" = "B" ]
                      then
 
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
                              then
-                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$id_result
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
                              elif [ "$where_is_it" = "2" ] || [ "$where_is_it" = "3" ]
                              then
                                      initial_color ; LOGIN_COLOR=$HI_LOGIN ; where_is_it=3 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result
                              elif [ "$where_is_it" = "4" ]
                              then
                                      initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
                              fi
                      elif [ "$input" = "C" ]
-		     then
+                     then
                              initial_color
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
                              then
-                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
                              elif [ "$where_is_it" = "2" ]
                              then
-                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     initial_color ; TEMP_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
                              elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
                              then
                                      initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=4 ; clear
@@ -168,25 +425,28 @@ do
                              initial_color
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
                              then
-                                     initial_color ; ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
+                                     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result ; clear
                              elif [ "$where_is_it" = "2" ]
                              then
-                                     initial_color ; PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
+                                     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; clear
                              elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
                              then
                                      initial_color ; LOGIN_COLOR=$HI_LOGIN ; where_is_it=3 ; clear
                              fi
                       fi
               else
-                      clear ; where_is_it=0
+                      clear
               fi
       else
-        clear ; where_is_it=0
+        clear
         fi
-
 
 done
 }
+
+
 
 sign_out_menu()
 {
@@ -290,12 +550,12 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
 			     then
 				     initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
-				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ; clear
+				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result 
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result
                              elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
                              then
                                      initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; where_is_it=2 ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; where_is_it=2
                              fi
                      elif [ "$input" = "B" ]
                      then
@@ -303,12 +563,12 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
                              then
                                      initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=2 ; clear
-				     [ -z "$id_result" ] || TEMP_ID_COLOR=$id_result ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; clear
-                             elif [ "$where_is_it" = "2" ] || [ "$where_is_it" = "3" ]
+				     [ -z "$id_result" ] || TEMP_ID_COLOR=$id_result
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result 
+			     elif [ "$where_is_it" = "2" ] || [ "$where_is_it" = "3" ]
                              then
                                      initial_color ; SIGN_OUT_COLOR=$HI_SIGN_OUT ; where_is_it=3 ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result
                              elif [ "$where_is_it" = "4" ]
                              then
                                      initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=3 ; clear
@@ -319,11 +579,11 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
                              then
                                      initial_color ; TEMP_ID_COLOR=$HI_ID ; where_is_it=1 ; clear
-				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result ; clear
+				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
                              elif [ "$where_is_it" = "2" ]
                              then
                                      initial_color ; TEMP_COLOR=$HI_PW ; where_is_it=2 ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
                              elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = 4 ]
                              then
                                      initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=4 ; clear
@@ -345,10 +605,10 @@ do
                              fi
 		      fi
 	      else
-		      clear ; 
+		      clear 
 	      fi
       else
-	clear ;
+	clear 
 	fi
 done
 
@@ -439,7 +699,7 @@ do
 				setterm -cursor on
 				exit
 			fi
-			if [ $id = $id_1p ]
+			if [ $id = "$id_1p" ]
 			then
 				setterm -cursor on
 				exit
@@ -471,8 +731,8 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "3" ]
                              then
                                      initial_color ; [ -z "$id_result" ] && TEMP_ID_COLOR=$HI_TEMP_ID ; where_is_it=1 ; clear
-				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result ; where_is_it=1 ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ; where_is_it=1 ; clear
+				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result ; 
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ;
 			     elif [ "$where_is_it" = "4" ] || [ "$where_is_it" = "5" ]
 			     then
                                      initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=3 ; clear
@@ -488,17 +748,17 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
 			     then
 				     initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=3 ; clear
-				     initial_color ; [ -z "$pw_result" ] || TEMP_PW_COLOR=$TEMP_PW_COLOR ; where_is_it=3 ; clear
-				     initial_color ; [ "$TEMP_ID_COLOR" = "$red_id_result" ] && TEMP_ID_COLOR=$id_result ; clear
-				     [ -z "$pw_result" ] && TEMP_PW_COLOR=$HI_PW || TEMP_PW_COLOR=$red_pw_result ; where_is_it=3 ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$TEMP_PW_COLOR ; where_is_it=3 ; clear
+				     [ "$TEMP_ID_COLOR" = "$red_id_result" ] && TEMP_ID_COLOR=$id_result
+				     [ -z "$pw_result" ] && TEMP_PW_COLOR=$HI_PW || TEMP_PW_COLOR=$red_pw_result 
 			     elif [ "$where_is_it" = "2" ]
                              then
                                      initial_color ; TEMP_PW_COLOR=$HI_PW ; where_is_it=3 ; clear 
-				     initial_color ; [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result; where_is_it=3 ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$red_pw_result
                              elif [ "$where_is_it" = "3" ] || [ "$where_is_it" = "4" ]
                              then
 				     initial_color ; SIGN_IN_COLOR=$HI_SIGN_IN ; where_is_it=4 ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ; where_is_it=4 ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result
                              elif [ "$where_is_it" = "5" ]
                              then 
                                      initial-color ; EXIT_COLOR=$HI_EXIT ; where_is_it=5 ; clear
@@ -509,11 +769,11 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ]
 			     then
 				     initial_color ; DUP_CHECK_COLOR=$HI_DUP_CHECK ; where_is_it=2; clear
-				     initial_color ; [ "$TEMP_ID_COLOR" = "$red_id_result" ] && TEMP_ID_COLOR="$id_result" ; DUP_CHECK_COLOR=$HI_DUP_CHECK ; clear
+				     [ "$TEMP_ID_COLOR" = "$red_id_result" ] && TEMP_ID_COLOR="$id_result" ; DUP_CHECK_COLOR=$HI_DUP_CHECK
 			     elif [ "$where_is_it" = "3" ]
                              then
                                      initial_color ; DUP_CHECK_COLOR=$HI_DUP_CHECK ; where_is_it=2 ; clear
-				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result ; clear
+				     [ -z "$pw_result" ] || TEMP_PW_COLOR=$pw_result
                              elif [ "$where_is_it" = "4" ] || [ "$where_is_it" = "5" ]
                              then
                                      initial_color ; EXIT_COLOR=$HI_EXIT ; where_is_it=5 ; clear
@@ -527,7 +787,7 @@ do
                              if [ "$where_is_it" = "0" ] || [ "$where_is_it" = "1" ] || [ "$where_is_it" = "2" ]
                              then
                                      initial_color; [ -z "$id_result" ] && TEMP_ID_COLOR=$HI_TEMP_ID ; where_is_it=1 ; clear
-				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result ; where_is_it=1 ; clear
+				     [ -z "$id_result" ] || TEMP_ID_COLOR=$red_id_result
                              elif [ "$where_is_it" = "4" ] || [ "$where_is_it" = "5" ]
                              then
 				     initial_color; SIGN_IN_COLOR=$HI_SIGN_IN ; where_is_it=4 ; clear
